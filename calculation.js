@@ -86,7 +86,7 @@ function calculateTax(e) {
     d4 = 164925;
     d5 = 209425;
     d6 = 314150;
-  }s
+  }
 
   //tax owed
   let taxOwed;
