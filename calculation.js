@@ -16,6 +16,8 @@ let filingAs = document.querySelector('#filing-as');
 let income = document.querySelector('#income');
 let taxAnswer = document.querySelector('#tax-answer');
 let taxOwedDOM = document.querySelector('#tax-owed');
+let taxBracketDOM = document.querySelector('#tax-bracket');
+let effectiveTaxRateDOM = document.querySelector('#effective-tax-rate');
 
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -90,25 +92,38 @@ function calculateTax(e) {
 
   //tax owed
   let taxOwed;
+  let taxBracket;
+  let effectiveTaxRate;
   
   if(income.value < 0) {
     console.error('Negative income was used.');
   } else if(income.value <= d1) {
     taxOwed = tax1*income.value;
+    taxBracket = "10%";
   } else if(income.value <= d2) {
     taxOwed = tax1*d1 + tax2*(income.value-d1);
+    taxBracket = "12%";
   } else if(income.value <= d3) {
     taxOwed = tax1*d1 + tax2*(d2-d1) + tax3*(income.value-d2);
+    taxBracket = "22%";
   } else if(income.value <= d4) {
     taxOwed = tax1*d1 + tax2*(d2-d1) + tax3*(d3-d2) + tax4*(income.value-d3);
+    taxBracket = "24%";
   } else if(income.value <= d5) {
     taxOwed = tax1*d1 + tax2*(d2-d1) + tax3*(d3-d2) + tax4*(d4-d3) + tax5*(income.value-d4);
+    taxBracket = "32%";
   } else if(income.value <= d6) {
     taxOwed = tax1*d1 + tax2*(d2-d1) + tax3*(d3-d2) + tax4*(d4-d3) + tax5*(d5-d4) + tax6*(income.value-d5);
+    taxBracket = "35%";
   } else if(income.value > d6) {
     taxOwed = tax1*d1 + tax2*(d2-d1) + tax3*(d3-d2) + tax4*(d4-d3) + tax5*(d5-d4) + tax6*(d6-d5) + tax7*(income.value-d6);
+    taxBracket = "37%";
   }
   taxOwedDOM.innerHTML = `$${numberWithCommas(taxOwed.toFixed(2))}`;
+  taxBracketDOM.innerHTML = taxBracket;  
+  effectiveTaxRate = taxOwed / income.value;
+  effectiveTaxRateDOM.innerHTML = `${(effectiveTaxRate*100).toFixed(3)}%`;
+
   
   // Show answer in DOM if hidden
   if(taxAnswer.classList.contains('d-none')){
@@ -120,6 +135,7 @@ function calculateTax(e) {
 // Hide answer if clicking input fields
 filingAs.addEventListener('focus', hideAnswer);
 income.addEventListener('focus', hideAnswer);
+income.addEventListener('keydown', hideAnswer);
 function hideAnswer() {
   if(taxAnswer.classList.contains('d-block')){
     taxAnswer.classList.remove('d-block');
