@@ -1,3 +1,7 @@
 .mw-550 {
   max-width: 550px;
 }
+
+body {
+  font-family: 'Ubuntu', sans-serif;
+}
